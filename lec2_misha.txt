@@ -1,0 +1,203 @@
+8.10.15
+
+Type of functions (skipped)
+
+Set
+a ∈ Set => a - сет.
+объект a - сет.
+1. Имеется способ постр. a - иметь канонические конструктор
+2. Два сета A и B - одинаковые, если a ∈ A, a = b, b ∈ A, a=b ∈ A, a=b ∈ B
+Формально:
+1. Set type
+2. A ∈ Set
+   -------
+   El(A) type
+
+Constants
+1. Определяемые
+a. Эксплицитные (typedefs)
+    |N' = ||N ∈ Set
+    1 = succ(0) ∈ |N
+    id = [x]x ∈ |N -> |N
+    id' = [A,x]x ∈ (A ∈ Set, A)A
+b. Имплицитные (pattern matching)
+    (+) ∈ |N -> |N -> |N
+    +(0, n) = n ∈ N
+    +(succ n, m) = +(n, succ m) ∈ N
+
+    natrec ∈ |N -> (|N -> |N -> |N) -> |N -> |N
+             start    fold          counter
+    natrec (d, foo, 0) = d
+    natrec (d, foo, succ b) = foo(b, natrec(d, foo, b))
+2. Примитивные (не можем их приравнивать)
+    x ∈ A
+    Ex: |N ∈ Set, |N → |N ∈ Set
+    0 ∈ |N
+    succ ∈ |N -> |N
+
+Propositional
+Теория: a_1 ∈ A_1, a_2 ∈ A_2, ...
+        c_1 = d_1 ∈ X_1, c_2 = d_2 ∈ X_2, ...
+
+Конъюнкция
+1. & ∈ (Set, Set) Set // тип
+2. & - formation
+    A ∈ Set, B ∈ Set
+    &(A, B) ∈ Set
+3. &_I ∈ (A, B ∈ Set; A, B) A&B // конструктор
+    p ∈ A&B <=> &_I(A, B, a, b)
+4. &_I-introduction
+    A set, B set, a ∈ A, b ∈ B
+    --------------------------
+    &_I(A, B, a, b) ∈ A & B // (4 аппликации)
+5.  fst, snd
+    &_E_1(A, B, &I(A, B, a, b)) = a ∈ A
+    &_E_2(A, B, &I(A, B, a, b)) = b ∈ B
+    A ∈ Set, B ∈ Set, p ∈ A&B
+    ----------------------------------
+    &E1(A, B, p) ∈ A, &E2(A, B, p) ∈ B
+
+Импликация
+1. ⊃ ∈ (Set, Set) Set
+2. ⊃ - formation
+    A ∈ Set, B ∈ Set
+    ⊃(A, B) ∈ Set
+3. ⊃_I ∈ (A, B ∈ Set; (A)B) A⊃B
+4. ⊃ - introduction (доказывается)
+    A ∈ Set, B ∈ Set c ∈ B[x ∈ A]
+   -----------------------------
+   ⊃_I(A, B, c) ∈ A⊃B
+5. ⊃ - elimination
+    ⊃_E ∈ (A, B ∈ Set, A⊃B, A) B
+    ⊃_E(A, B, ⊃_I(A, B, foo), a) = foo(a) ∈ B
+    A ∈ Set B ∈ Set c∈A⊃B d∈A
+    -------------------------
+    ⊃_E(A, B, c, d) ∈ B
+
+NB (на подумать): эквивалентны ли (A)B и B[x ∈ A] ?
+
+General Set formation
+1. Примитивная константа для сета
+2. Примитивная константа для конструктора (канонический конструктор)
+3. Селектор (formation rule), вроде &_E_1, &_E_2, ⊃_E
+    a) Equality rules ...
+
+Boolean Set
+1. Bool ∈ Set
+2. true, false ∈ Bool
+3. if ∈ (C ∈ (Bool)Set, b ∈ Bool, C(true), C(false)) C(b) // if с разными (зависимыми) типами
+    if(C, true, c_1, c_2) = c_1
+    if(C, false, c_1, c_2) = c_2
+
+    Elim. rule 1: C ∈ (Bool)Set, b ∈ Bool, c1 ∈ C(true), c2 ∈ C(false)
+                  ----------------------------------------------------
+                  if(C, true, c_1, c_2) = c1, if(C, false, c_1, c_2) = c2
+
+Empty Set
+1. {} ∈ Set
+5. case ∈ (C ∈ ({})B, a ∈ {}) C(a) // если нашел эл-т в пустом мн-ве, делай с ним все что угодно
+
+Nat
+1. |N ∈ Set
+2. 0 ∈ |N
+   succ ∈ (N) N
+3. natrec ∈ (C ∈ N Set; d ∈ C(0), e ∈ (x ∈ N, y ∈ C(x)) C(succ(x)), n ∈ N) C(n)
+   natrec(C, d, e, 0) = d
+   natrec(C, d, e, succ(n)) = e(n, natrec(C, d, e, n))
+   plus ∈ (|N, |N) |N
+   plus(m, n) = natrec([x]||N, n, [x,y]succ(y), m)
+   mul ∈ (|N, |N) |N
+   mul (m, n) = natrec([x]||N, 0, [x,y]plus(y, n), m)
+
+Set of functions (П)
+1. A ∈ Set, B ∈ Set[x ∈ A]
+   П(A, B) ∈ Set - содержит функции, которые отобр. эл-ты a ∈ A в какие-то z ∈ B(a)
+2. λ(A ∈ Set, B ∈(x ∈ A) Set, f ∈ (x ∈ A) B) П(A, B)
+    Example:
+    λ(|N, [x](if x > 1 then |N else Bool); foo) ∈ П(N, [x]{N, Bool})
+    foo(0) = false, foo(1) = true, foo(n) = n - 2
+3. apply ∈ (A ∈ Set, B ∈ (x ∈ A) Set, g ∈ П(A, B), a ∈ A) B(a)
+   apply (A, B, λ(A, B, foo), a) = foo(a)
+   Заметим: П(A, B) соответствует квантору всеобщности
+
+Определим стрелочку
+→ ∈ (A, B ∈ Set) Set
+→ (A, B) = П(A, [x]B)
+
+Определим отрицание
+! ∈ (A ∈ Set) Set
+!A = A -> {}
+Докажем A -> !!A type
+То есть x ∈ A -> !!A = A -> ((A -> {}) -> {})
+λ' ∈ (A, B ∈ Set, f ∈ (x ∈ A) B) A→B
+λ ∈ (A ∈ Set, [x]B ∈ (x ∈ A) Set, f ∈ (x ∈ A) B) П(A, [x]B)
+apply'(A, B ∈ Set, A → B, a ∈ A) ∈ B
+apply(A ∈ Set, [x]B, П(A, [x]B), a ∈ A) ∈ B
+λ'(A, ((A -> {}) -> {}), [x](λ'(A -> {}, {}, [y](apply'(A, A -> {}, y, x)))))
+
+Определим + (DisjointSet)
+* inl (A, B ∈ Set, A) A+B
+* inr (A, B ∈ Set, B) A+B
+* when (A, B ∈ Set, c ∈ (A+B)
+  listrec(A, C, c, e, nil(A)) = c
+  listrec(A, C, c, e, cons(A, a, l)) = e(a, l, listrec(A, C, c, e, l))Set, p ∈ A+B, e ∈ (x ∈ A) C(inl(A, B, x)), b ∈ (y ∈ B) c(inr, A, B, y))
+  when (A, B, C, e, f, inl(A, B, a)) = e(a)
+  when (A, B, C, e, f, inr(A, B, b)) = f(b) c(p)
+
+Определим Σ (DisjointUnion sets family)
+* Σ ∈ (A ∈ Set, B ∈ (A)Set) Set
+* pair ∈ (A ∈ Set, B ∈ (A)Set, a ∈ A, b ∈ B(a)) Σ(A, B)
+* split ∈ (A ∈ Set, B ∈ (A)Set, C ∈ (Σ(A, B))Set, d ∈ (a ∈ A, b ∈ B(a)) C(pair(A, B, a, b)), p ∈ Σ(A, B)) C(p)
+  split(A, B, C, d, pair(A, B, a, b)) = d(a, b)
+* fst ∈ (A ∈ Set, B ∈ (A) Set, Σ(A, B)) A
+* snd ∈ (A ∈ Set, B ∈ (A) Set, p ∈ Σ(A, B)) B(fst(A, B, p))
+* fst(A, B, pair(A, B, a, b)) = a
+  fst(A, B, p) = split(A, B, [x]A, [x,y]x, p)
+* snd(A, B, pair(A, B, a, b)) = b
+  snd(A, B, p) = split(A, B, [x]B(fst(A, B, p)), [x,y]y, p)
+
+Определим List
+* List ∈ (A ∈ Set) Set
+* nil ∈ (A ∈ Set) List(A)
+* cons ∈ (A ∈ Set, x ∈ A, xs ∈ List(A)) List(A)
+* listrec ∈ (A ∈ Set, C ∈ (List(A)) Set, c ∈ C(nil(A)), e ∈ (x ∈ A, y ∈ List(A), z ∈ C(y)) C(cons(A, x, y)), l ∈ List(A)) C(l)
+  listrec(A, C, c, e, nil(A)) = c
+  listrec(A, C, c, e, cons(A, a, l)) = e(a, l, listrec(A, C, c, e, l))
+
+Определим Id
+* Id ∈ (A ∈ Set, x ∈ A, y ∈ A) Set
+* id ∈ (A ∈ Set, x ∈ A) Id(A, x, x)
+* idpeel ∈ (A ∈ Set, C ∈ (x, y ∈ A, z ∈ Id(A, x, y)) Set, a, b ∈ A, e ∈ Id(A, a, b), d ∈ (x ∈ A) C(x, x, id(A, x))) C(A, b, e)
+  idpeel(A, C, a, b, id(A, x), d) = d(x) // рефлексивность
+  d ∈ Id(A, a, b) => c ∈ Id(A, b, a)
+  idsymm(A, a, b, d) = idpeel(A, [x,y,c]Id(A,y,x), a, b, d, [x]id(A, x)) ∈ Id(A, b, a) // симметричность
+  idtrans(A, a, b, c, d, e) [d ∈ Id(A, a, b), e ∈ Id(A, b, c)] = apply(Id(A, b, c), Id(A, a, c), foo, e) ∈ Id(A, a, c)
+  , где foo ∈ Id(A, b, c) → Id(A, a, c), foo = idpeel(A, [x,y,d](Id(A, y, c) -> Id(A, x, c)), a, b, d,
+  [x]λ'(Id(A, x, c), Id(A, x, c), [w]w))
+  subst ∈ (A ∈ Set, P ∈ (A) Set, a, b ∈ A, d ∈ Id(A, a, b), p ∈ P(a)) P(b)
+  subst(A, P, a, b, c, p) = apply'(P(a), P(b), idpeel(A, [x,y,z](P(x)->P(y)), a, b, c, [x]λ'(P(x), P(x), [w]w)), p)
+
+Определим U (universum)
+  U ∈ Set
+  S ∈ (U)Set
+  Bool_u ∈ U
+  S(Bool_u) = Bool
+  {}_u ∈ U
+  S({}_u) = {}
+  П_u ∈ (A ∈ U, B ∈ (S(A)) U) U
+  S(П_u(A, B)) = П(S(A), [x]S(B(x)))
+
+Веселье: Id(N, 0, succ(0)) -> {} // 0 /= 1
+Id(N, 0, succ(0)) -> {}
+]∃ x ∈ Id(N, 0, succ(0))
+IsZero ∈ (N) U
+IsZero(m) = natrec(m, Bool_u, [y,z]{}_u)
+IsZero(0) = S(Bool_u) = Bool
+IsZero(succ(0)) = S({}_u) = {}
+true ∈ Bool = IsZero(0)
+subst(..., x, t) ∈ IsZero(succ(0)) = {} - конструктивно построили пустое множество
+λ'(Id(N, 0, succ(0)), {}, [x]subst(..., x, true)) ∈ Id(N, 0, succ(0)) -> {}
+
+Определим W
+W ∈ (S ∈ Set, P ∈ (x ∈ S) Set) Set
+* sup ∈ (S ∈ Set, P ∈ (x ∈ S) Set, f ∈ (y ∈ P) W (S, P)) W(S, P)

@@ -1,0 +1,54 @@
+3 основных Kind:
+Set : Type(1)
+Prop : Type(1)
+Type(i) : Type(i + 1)
+{ Set, Prop, Type(i) | i ∈ N }
+
+Definition x := y
+Definition fst(A B: Prop) (b: A /\ B) : A :=
+    match p with
+        pair a b => a
+    end.
+
+Inductive Bool: Set :=
+    true': Bool
+  | false': Bool.
+
+Definition if' (C : Bool -> Set) (b: Bool) (c1: C true') (c2: C false') :=
+    match b with
+        true' => c1
+      | false' => c2
+    end.
+
+{ 1 way }
+Theorem elim_rule_bool : forall (C: Bool -> Set) (b: Bool) (c1: C true') (c2: C false'),
+    (if C true' c1 c2) = c1 /\ (if C false' c1 c2) = c2
+Proof
+    intros C c1 c2.
+    Simpl.
+    exact (conj (eq_refl c1) (eq_refl c2)).
+Qed.
+
+{ 2 way }
+Section Elim_rule.
+    Variable c : Bool -> Set.
+    Variable c1 : C true'.
+    Variable c2 : C false'.
+
+Theorem elim_rule_bool : (if C true' c1 c2) = c1 /\ (if C false' c1 c2) = c2
+Proof
+    Simpl.
+    exact (conj (eq_refl c1) (eq_refl c2)).
+Qed.
+End Elim_rule.
+
+Definition or' (a b : Bool) :=
+    if a then true' else b.
+
+Definition and' (a b : Bool) :=
+    if a then b else false'.
+
+
+Infix "||" := or' : Bool_scope.
+Infix "&&" := and' : Bool_scope.
+Open Scope Bool_scope.

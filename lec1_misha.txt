@@ -1,0 +1,80 @@
+Notes: github.com/volhovm/study-notes
+
+Martin-Lõf Type Theory
+
+(∀x∈A)(∃x∈B) P(x, y), P : A → B
+
+* Types of TT
+** Extensional
+*** No way of checking objects' equality
+*** Type inference is undecidable
+** Intentional
+*** Type inference is decidable
+
+* Prop <=> Sets
+proof (A → B)   = proof A → proof B                     <=> {f : A → B}
+proof (A & B)   = <proof A, proof B>                    <=> A x B
+proof (A | B)   = inl(proof A) | inr(proof B)           <=> A + B (each element of A + B has "origin" mark with it)
+proof (!A)                                              <=> {f : A → {}}
+proof ((∃x∈A)B) = <proof (a ∈ A), proof (B[x := a])>    <=> (Σx∈A)B = {<a, b>, a ∈ A, b ∈ B[x <- a]}
+proof ((∀x∈A)B) = f: a → B[x <- a]                      <=> (Πx∈A)B = {b | b : a → b ∈ B[x <- a]}
+
+* Types, Elems, Equalities
+** A type (a ∈ A - a of type A)
+** 1. Условие для того, чтобы утверждать, что a - эл-т типа A
+** 2. Знаем условие для того, чтобы показать a = b ∈ A - отн. экв.
+** A = B: 1) a ∈ A <=> a ∈ B, 2) a = b ∈ A <=> a = b ∈ B - отн. экв.
+** Правила вывода
+*** a ∈ A.A=B |- a ∈ B
+*** a=b ∈ A.A=B |- a=b ∈ B
+
+* Context
+(*) x_1 ∈ A_1, x_2 ∈ A_2, ..., x_n ∈ A_n
+x_i верно в контексте {A_1,...,A_i}
+
+Background:
+C - тип, не зависящий от посылок
+A - тип, когда x ∈ C (A.type [x ∈ C]) для любого c ∈ C A[x <- c] - тип. A - семейство типов над C.
+A = B [x ∈ C] - для любого c ∈ C: A [x <- c] = B [x <- c]
+a ∈ A [x ∈ C] - для любого c ∈ C: a [x <- c] ∈ A [x <- c]
+
+Тогда (*) означает:
+x_1 ∈ A_1
+x_2 ∈ A_2 [x ∈ A_1]
+...
+x_n ∈ A_n [x_1 ∈ A_1; ...; x_(n-1) ∈ A_(n-1)]
+
+Правила вывода:
+(I)
+A type [x_1 ∈ A_1, ..., x_n ∈ A_n], a ∈ A
+-----------------------------------------
+A [x_1 <- a] type [x_2 ∈ A_2[x1 <- a]; ...; x_n ∈ A_n[x_1 <- a]]
+
+(II)
+A type [x_1 ∈ A_1, ..., x_n ∈ A_n], a=b ∈ A
+-------------------------------------------
+A [x_1 <- a] = A [x1 <- b] [x_2 ∈ A_2 [x1 <- a] ... x_n ∈ A_n [x_1 <- a]]
+
+(III)
+A = B [1..n] a ∈ A_1
+--------------------
+A [x1 <- a] = B [x1 <- a] [2..n]'
+
+(IV)
+α ∈ A [1..n] a ∈ A_1
+--------------------
+α [x_1 <- a] ∈ A [x_1 <- a] [2..n]'
+
+(V)
+α = β ∈ A [1..n], α ∈ A_1
+-------------------------
+α [x_1 <- a] = β [x_1 <- a] ∈ A [x_1 <- a] [2..n]'
+
+(VI) (Assumption)
+A type
+A_2 type [1..1]
+...
+A_n type [1..(n-1)]
+A type [1..n]
+-------------
+x ∈ C [1..n, x ∈ C]
