@@ -1,4 +1,5 @@
 (* Identity *)
+
 Inductive Id {A : Type} (a : A) : A -> Type :=
     id : Id a a.
 Notation "A == B" := (Id A B) (at level 70) : id_scope.
@@ -112,16 +113,6 @@ Proof.
     exact (id _).
 Qed.
 
-Lemma plus_assoc2 : forall a b c, a + (b + c) == (a + b) + c.
-Proof.
-    intros a b c.
-    assert ((a + b) + c == a + (b + c)).
-    rewrite plus_assoc.
-    exact (id _).
-    rewrite plus_assoc.
-    exact (id _).
-Qed.
-
 Lemma mul_succ_not_needed : forall a b, a * succ b == a * b + a.
 Proof.
     intros a b.
@@ -130,10 +121,9 @@ Proof.
     intros n ind_hyp.
     simpl.
     rewrite ind_hyp.
-    set (nb := n * b) in *.
-    rewrite (plus_shift_succ b (nb + n)).
-    rewrite (plus_shift_succ nb n).
-    rewrite (plus_assoc b nb (succ n)).
+    rewrite (plus_shift_succ b (n * b + n)).
+    rewrite (plus_shift_succ (n * b) n).
+    rewrite (plus_assoc b (n * b) (succ n)).
     exact (id _).
 Qed.
 
@@ -162,12 +152,10 @@ Proof.
     intros n ind_hyp.
     simpl.
     rewrite ind_hyp.
-    set (nb := n * b) in *.
-    set (nc := n * c) in *.
-    rewrite (plus_assoc b nb (c + nc)).
-    rewrite (plus_comm nb (c + nc)).
-    rewrite (plus_assoc c nc nb).
-    rewrite (plus_assoc2 b c (nc + nb)).
-    rewrite (plus_comm nc nb).
+    rewrite (plus_assoc b (n * b) (c + (n * c))).
+    rewrite (plus_comm (n * b) (c + (n * c))).
+    rewrite (plus_assoc c (n * c) (n * b)).
+    rewrite <- (plus_assoc b c ((n * c) + (n * b))).
+    rewrite (plus_comm (n * c) (n * b)).
     exact (id _).
 Qed.
