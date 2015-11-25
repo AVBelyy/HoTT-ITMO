@@ -1,4 +1,4 @@
-(* Identity *)
+(* Equality *)
 
 Inductive Id {A : Type} (a : A) : A -> Type :=
     id : Id a a.
